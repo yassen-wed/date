@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>A Special Question For You ✨</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@300..700&display=swap');
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Fredoka', sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #ffe5ec, #ffc2d1, #f0e6ff);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            perspective: 1000px;
+        }
+
+        /* Calmer, Slower Floating Hearts Background */
+        .hearts-bg {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            top: 0;
+            left: 0;
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        .heart {
+            position: absolute;
+            display: block;
+            list-style: none;
+            bottom: -150px;
+            background-color: rgba(255, 105, 180, 0.25); /* More subtle opacity */
+            animation: floatUp 25s infinite linear; /* Much slower movement */
+            border-radius: 50%;
+        }
+
+        @keyframes floatUp {
+            0% { transform: translateY(0) rotate(0deg); opacity: 1; border-radius: 0; }
+            100% { transform: translateY(-1200px) rotate(360deg); opacity: 0; border-radius: 50%; }
+        }
+
+        /* App Container */
+        .container {
+            width: 90%;
+            max-width: 450px;
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(8px);
+            border-radius: 30px;
+            padding: 40px 30px;
+            box-shadow: 0 15px 35px rgba(255, 105, 180, 0.15);
+            border: 4px solid #fff;
+            text-align: center;
+            z-index: 2;
+            position: relative;
+            min-height: 420px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* Page Layouts */
+        .page {
+            display: none;
+            width: 100%;
+            animation: fadeIn 0.4s ease-in-out forwards;
+        }
+
+        .page.active {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: scale(0.96); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        /* Typography & Visuals */
+        h1 {
+            color: #ff4d6d;
+            font-size: 2rem;
+            margin-bottom: 15px;
+            text-shadow: 2px 2px #fff;
+        }
+
+        p {
+            color: #6c5b7b;
+            font-size: 1.1rem;
+            margin-bottom: 25px;
+        }
+
+        .sticker {
+            font-size: 4.5rem;
+            margin-bottom: 15px;
+            display: inline-block;
+        }
+
+        /* Spaced-out Buttons Styling */
+        .btn-container {
+            display: flex;
+            gap: 80px; /* Generous space between buttons */
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+            position: relative;
+            min-height: 100px;
+            margin-top: 10px;
+        }
+
+        .btn {
+            padding: 12px 35px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            border: none;
+            border-radius: 20px;
+            cursor: pointer;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+        }
+
+        .btn-yes {
+            background-color: #ff4d6d;
+            color: white;
+            transition: transform 0.2s ease;
+        }
+
+        .btn-yes:hover {
+            background-color: #ff758f;
+            transform: scale(1.05);
+        }
+
+        .btn-no {
+            background-color: #a2a2a2;
+            color: white;
+            position: relative; /* Starts regular, shifts to absolute instantly on approach */
+            z-index: 10;
+        }
+
+        .btn-next {
+            background-color: #c77dff;
+            color: white;
+            margin-top: 25px;
+            width: 80%;
+            transition: background-color 0.2s;
+        }
+
+        .btn-next:hover {
+            background-color: #d8b4fe;
+        }
+
+        /* Dropdown & Input Customization */
+        input[type="date"], select {
+            width: 80%;
+            padding: 12px;
+            margin: 10px 0;
+            border: 2px solid #ffb3c1;
+            border-radius: 15px;
+            font-size: 1rem;
+            color: #ff4d6d;
+            outline: none;
+            background: #fff0f3;
+            text-align: center;
+            text-align-last: center; /* Center-aligns selection text */
+            cursor: pointer;
+            font-weight: 500;
+        }
+
+        /* Food Selector Grid */
+        .food-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 12px;
+            width: 100%;
+            max-height: 260px;
+            overflow-y: auto;
+        }
+
+        .food-item {
+            background: white;
+            border: 2px solid #ffe5ec;
+            border-radius: 15px;
+            padding: 12px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .food-item:hover {
+            border-color: #ff4d6d;
+            background: #fff0f3;
+        }
+
+        .food-item.selected {
+            border-color: #ff4d6d;
+            background: #ff4d6d;
+            color: white;
+        }
+
+        .food-sticker {
+            font-size: 2rem;
+        }
+
+        .food-name {
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+
+        /* Final Card Styling */
+        .final-card {
+            background: linear-gradient(135deg, #fff0f3, #ffffff);
+            border: 3px dashed #ff758f;
+            padding: 25px 20px;
+            border-radius: 20px;
+            width: 100%;
+            margin-top: 15px;
+        }
+
+        .highlight-text {
+            color: #ff4d6d;
+            font-weight: bold;
+            font-size: 1.3rem;
+            margin: 10px 0;
+            display: block;
+        }
+    </style>
+</head>
+<body>
+
+    <ul class="hearts-bg" id="hearts-container"></ul>
+
+    <div class="container">
+        
+        <div class="page active" id="page1">
+            <span class="sticker">🥺👉👈</span>
+            <h1>Will you go on a date with me?</h1>
+            <p>I promise it'll be super fun!</p>
+            <div class="btn-container" id="p1-btn-container">
+                <button class="btn btn-yes" onclick="nextPage(2)">Yes!</button>
+                <button class="btn btn-no" id="no-btn">No</button>
+            </div>
+        </div>
+
+        <div class="page" id="page2">
+            <span class="sticker">🎉🥳💖</span>
+            <h1>You said YES!!</h1>
+            <p>...honestly, I was totally ready to say no for you if you didn't click it! 😉</p>
+            <span class="sticker" style="font-size: 3.5rem;">✨🐱👑🦄✨</span>
+            <button class="btn btn-next" onclick="nextPage(3)">Let's plan it! ✨</button>
+        </div>
+
+        <div class="page" id="page3">
+            <span class="sticker">📅⏰🎀</span>
+            <h1>When are you free?</h1>
+            <p>Pick the perfect day and time!</p>
+            <input type="date" id="dateInput">
+            
+            <select id="timeInput">
+                <option value="" disabled selected>✨ Choose a Time ✨</option>
+                <option value="12:00 PM">12:00 PM (Lunch)</option>
+                <option value="1:00 PM">1:00 PM</option>
+                <option value="2:00 PM">2:00 PM</option>
+                <option value="3:00 PM">3:00 PM</option>
+                <option value="4:00 PM">4:00 PM</option>
+                <option value="5:00 PM">5:00 PM (Early Dinner)</option>
+                <option value="6:00 PM">6:00 PM</option>
+                <option value="7:00 PM">7:00 PM (Dinner Night)</option>
+                <option value="8:00 PM">8:00 PM</option>
+                <option value="9:00 PM">9:00 PM</option>
+            </select>
+
+            <button class="btn btn-next" onclick="validatePage3()">Next Step 💖</button>
+        </div>
+
+        <div class="page" id="page4">
+            <span class="sticker">🍕🍰🤤</span>
+            <h1>What are we eating?</h1>
+            <p>Pick your absolute favorite crave!</p>
+            <div class="food-grid">
+                <div class="food-item" onclick="selectFood(this, 'Pizza')">
+                    <span class="food-sticker">🍕</span>
+                    <span class="food-name">Cheesy Pizza Date</span>
+                </div>
+                <div class="food-item" onclick="selectFood(this, 'Sushi')">
+                    <span class="food-sticker">🍣</span>
+                    <span class="food-name">Fancy Sushi Night</span>
+                </div>
+                <div class="food-item" onclick="selectFood(this, 'Burgers')">
+                    <span class="food-sticker">🍔</span>
+                    <span class="food-name">Burgers & Crispy Fries</span>
+                </div>
+                <div class="food-item" onclick="selectFood(this, 'Pasta')">
+                    <span class="food-sticker">🍝</span>
+                    <span class="food-name">Romantic Italian Pasta</span>
+                </div>
+                <div class="food-item" onclick="selectFood(this, 'Ice Cream')">
+                    <span class="food-sticker">🍦</span>
+                    <span class="food-name">Sweet Waffles & Ice Cream</span>
+                </div>
+            </div>
+            <button class="btn btn-next" onclick="validatePage4()">Finish! 👑</button>
+        </div>
+
+        <div class="page" id="page5">
+            <span class="sticker">💌🧸💝</span>
+            <h1>It's a Date!</h1>
+            <div class="final-card">
+                <p>Be ready on:</p>
+                <span class="highlight-text" id="finalDateTime">Loading...</span>
+                <p>For some delicious <span id="finalFood" style="color:#ff4d6d; font-weight:bold;">Food</span>!</p>
+                <p style="font-size: 1.2rem; font-weight: bold; color: #ff758f; margin-top: 15px;">🚗 I will pick you up! 🚗</p>
+            </div>
+            <span class="sticker" style="font-size: 2.5rem; margin-top: 15px;">💋✨🌹</span>
+        </div>
+
+    </div>
+
+    <script>
+        // Generate Gentle Floating Background Hearts (Reduced count, slower speeds)
+        const heartsContainer = document.getElementById('hearts-container');
+        const heartCount = 7; // Cut in half for less clutter
+        for (let i = 0; i < heartCount; i++) {
+            const li = document.createElement('li');
+            li.classList.add('heart');
+            const size = Math.floor(Math.random() * 40) + 25;
+            li.style.width = `${size}px`;
+            li.style.height = `${size}px`;
+            li.style.left = `${Math.random() * 100}%`;
+            li.style.animationDelay = `${Math.random() * 12}s`;
+            li.style.animationDuration = `${Math.random() * 10 + 20}s`; 
+            li.style.background = `rgba(255, 182, 193, 0.4)`;
+            heartsContainer.appendChild(li);
+        }
+
+        // Page Navigation
+        function nextPage(pageNumber) {
+            document.querySelectorAll('.page').forEach(page => page.classList.remove('active'));
+            document.getElementById(`page${pageNumber}`).classList.add('active');
+            
+            if(pageNumber === 5) {
+                compileFinalCard();
+            }
+        }
+
+        // "No" Button Smart Dodge Tracking
+        const noBtn = document.getElementById('no-btn');
+        const container = document.getElementById('p1-btn-container');
+
+        ['mouseenter', 'mouseover', 'touchstart', 'touchmove'].forEach(evt => {
+            noBtn.addEventListener(evt, function(e) {
+                e.preventDefault();
+                
+                // Switch immediately to absolute layout on approach so it can move anywhere inside the container
+                noBtn.style.position = 'absolute';
+                
+                const containerRect = container.getBoundingClientRect();
+                const maxX = containerRect.width - noBtn.offsetWidth;
+                const maxY = 140; // constrained height box to look neat
+
+                let randomX = Math.random() * maxX;
+                let randomY = (Math.random() * maxY) - 40; 
+
+                noBtn.style.left = `${randomX}px`;
+                noBtn.style.top = `${randomY}px`;
+            });
+        });
+
+        // Dropdown Form Validation
+        function validatePage3() {
+            const date = document.getElementById('dateInput').value;
+            const time = document.getElementById('timeInput').value;
+            if (!date || !time) {
+                alert("Please select both a pretty date and time! 💖");
+                return;
+            }
+            nextPage(4);
+        }
+
+        // Food Grid Selection Handlers
+        let chosenFood = "";
+        function selectFood(element, foodName) {
+            document.querySelectorAll('.food-item').forEach(item => item.classList.remove('selected'));
+            element.classList.add('selected');
+            chosenFood = foodName;
+        }
+
+        function validatePage4() {
+            if (!chosenFood) {
+                alert("Please pick a delicious meal option! 🍕");
+                return;
+            }
+            nextPage(5);
+        }
+
+        // Display Final Card Data
+        function compileFinalCard() {
+            const rawDate = document.getElementById('dateInput').value;
+            const chosenTime = document.getElementById('timeInput').value;
+            
+            // Format calendar date softly
+            const dateObj = new Date(rawDate + 'T00:00:00');
+            const options = { weekday: 'long', month: 'short', day: 'numeric' };
+            const formattedDate = dateObj.toLocaleDateString('en-US', options);
+
+            document.getElementById('finalDateTime').innerText = `${formattedDate} @ ${chosenTime}`;
+            document.getElementById('finalFood').innerText = chosenFood;
+        }
+    </script>
+</body>
+</html>
